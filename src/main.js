@@ -28,12 +28,20 @@ export default async ({ req, res, log, error }) => {
   const databases = new Databases(client);
   const dbId = process.env.APPWRITE_DATABASE_ID;
 
-  // ID Koleksi (hardcode atau ambil dari env vars juga)
-  const INVENTORY_ITEMS_COLLECTION_ID = 'inventoryItems';
-  const STOCK_MUTATIONS_COLLECTION_ID = 'stockMutations';
-  const CUSTOMERS_COLLECTION_ID = 'customers';
-  const POS_SHIFTS_COLLECTION_ID = 'posShifts';
-  const POS_TRANSACTIONS_COLLECTION_ID = 'posTransactions';
+
+const INVENTORY_ITEMS_COLLECTION_ID = process.env.INVENTORY_ITEMS_COLLECTION_ID;
+const STOCK_MUTATIONS_COLLECTION_ID =  process.env.NEXT_PUBLIC_INVENTORY_ITEMS_COLLECTION_ID;
+const CUSTOMERS_COLLECTION_ID =  process.env.CUSTOMERS_COLLECTION_ID;
+const POS_SHIFTS_COLLECTION_ID =  process.env.POS_SHIFTS_COLLECTION_ID;
+const POS_TRANSACTIONS_COLLECTION_ID =  process.env.POS_TRANSACTIONS_COLLECTION_ID;
+
+
+  // // ID Koleksi (hardcode atau ambil dari env vars juga)
+  // const INVENTORY_ITEMS_COLLECTION_ID = 'inventoryItems';
+  // const STOCK_MUTATIONS_COLLECTION_ID = 'stockMutations';
+  // const CUSTOMERS_COLLECTION_ID = 'customers';
+  // const POS_SHIFTS_COLLECTION_ID = 'posShifts';
+  // const POS_TRANSACTIONS_COLLECTION_ID = 'posTransactions';
 
   // --- 2. Proses Inti Transaksi (dibungkus try-catch) ---
   try {
