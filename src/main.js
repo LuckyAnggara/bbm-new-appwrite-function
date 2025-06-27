@@ -47,8 +47,8 @@ export default async ({ req, res, log, error }) => {
   try {
     log('[STEP 1/5] Memeriksa ketersediaan stok...');
     for (const item of transactionData.items) {
-      log(` -> Cek stok untuk item ID: ${item.itemId}, butuh: ${item.quantity}`);
-      const inventoryDoc = await databases.getDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.itemId);
+      log(` -> Cek stok untuk item ID: ${item.productId}, butuh: ${item.quantity}`);
+      const inventoryDoc = await databases.getDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.productId);
       if (inventoryDoc.quantity < item.quantity) {
         throw new Error(`Stok untuk ${item.name} tidak mencukupi (sisa ${inventoryDoc.quantity}).`);
       }
@@ -74,16 +74,16 @@ export default async ({ req, res, log, error }) => {
 
     log('[STEP 3/5] Memperbarui stok dan membuat mutasi...');
     for (const item of transactionData.items) {
-      log(` -> Proses item: ${item.name} (ID: ${item.itemId})`);
-      const inventoryDoc = await databases.getDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.itemId);
+      log(` -> Proses item: ${item.name} (ID: ${item.productId})`);
+      const inventoryDoc = await databases.getDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.productId);
       const currentQuantity = inventoryDoc.quantity;
       const newQuantity = currentQuantity - item.quantity;
       
-      await databases.updateDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.itemId, { quantity: newQuantity });
-      log(`   -> Stok item ${item.itemId} diupdate ke: ${newQuantity}`);
+      await databases.updateDocument(dbId, INVENTORY_ITEMS_COLLECTION_ID, item.productId, { quantity: newQuantity });
+      log(`   -> Stok item ${item.productId} diupdate ke: ${newQuantity}`);
 
       await databases.createDocument(dbId, STOCK_MUTATIONS_COLLECTION_ID, ID.unique(), {
-        itemId: item.itemId,
+        productId: item.productId,
         itemName: item.name,
         branchId: transactionData.branchId,
         change: -item.quantity,
@@ -95,7 +95,7 @@ export default async ({ req, res, log, error }) => {
         userId: transactionData.userId,
         userName: transactionData.userName,
       });
-      log(`   -> Mutasi stok untuk item ${item.itemId} berhasil dibuat.`);
+      log(`   -> Mutasi stok untuk item ${item.productId} berhasil dibuat.`);
     }
     log('[SUCCESS] Semua stok dan mutasi berhasil diproses.');
 
